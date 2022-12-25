@@ -20,7 +20,6 @@ The purpose here is to showcase how you can deploy an entire Kubernetes cluster 
 The following components will be installed in your [k3s](https://k3s.io/) cluster by default. Most are only included to get a minimum viable cluster up and running.
 
 - [flux](https://toolkit.fluxcd.io/) - GitOps operator for managing Kubernetes clusters from a Git repository
-- [kube-vip](https://kube-vip.io/) - Load balancer for the Kubernetes control plane nodes
 - [metallb](https://metallb.universe.tf/) - Load balancer for Kubernetes services
 - [cert-manager](https://cert-manager.io/) - Operator to request SSL certificates and store them as Kubernetes resources
 - [calico](https://www.tigera.io/project-calico/) - Container networking interface for inter pod and service networking
@@ -29,11 +28,10 @@ The following components will be installed in your [k3s](https://k3s.io/) cluste
 - [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) - Kubernetes ingress controller used for a HTTP reverse proxy of Kubernetes ingresses
 - [local-path-provisioner](https://github.com/rancher/local-path-provisioner) - provision persistent local storage with Kubernetes
 
-_Additional applications include [hajimari](https://github.com/toboshii/hajimari), [error-pages](https://github.com/tarampampam/error-pages), [echo-server](https://github.com/Ealenn/Echo-Server), [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller), [reloader](https://github.com/stakater/Reloader), and [kured](https://github.com/weaveworks/kured)_
+_Additional applications include [error-pages](https://github.com/tarampampam/error-pages), [echo-server](https://github.com/Ealenn/Echo-Server), [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller), [reloader](https://github.com/stakater/Reloader), and [kured](https://github.com/weaveworks/kured)_
 
 For provisioning the following tools will be used:
 
-- [Fedora 36 Server](https://getfedora.org/en/server/download/) - Universal operating system that supports running all kinds of home related workloads in Kubernetes and has a faster release cycle
 - [Ubuntu 22.04 Server](https://ubuntu.com/download/server) - Alternative operating system, limited community support
 - Talos - Existing Talos installation
 - [Terraform](https://www.terraform.io) - Provision an already existing Cloudflare domain and certain DNS records to be used with your k3s cluster
@@ -48,7 +46,7 @@ For provisioning the following tools will be used:
 
 ### 💻 Systems
 
-- One or more nodes with a fresh install of [Fedora Server 36](https://getfedora.org/en/server/download/).
+- One or more nodes with a fresh install of Talos.
   - These nodes can be ARM64/AMD64 bare metal or VMs.
   - An odd number of control plane nodes, greater than or equal to 3 is required if deploying more than one control plane node.
 - A [Cloudflare](https://www.cloudflare.com/) account with a domain, this will be managed by Terraform and external-dns. You can [register new domains](https://www.cloudflare.com/products/registrar/) directly thru Cloudflare.
@@ -312,7 +310,7 @@ task cluster:resources
 
 [k8s_gateway](https://github.com/ori-edge/k8s_gateway) is deployed on the IP choosen for `${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}`. Inorder to test DNS you can point your clients DNS to the `${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}` IP address and load `https://hajimari.${BOOTSTRAP_CLOUDFLARE_DOMAIN}` in your browser.
 
-You can also try debugging with the command `dig`, e.g. `dig @${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR} hajimari.${BOOTSTRAP_CLOUDFLARE_DOMAIN}` and you should get a valid answer containing your `${BOOTSTRAP_METALLB_INGRESS_ADDR}` IP address.
+You can also try debugging with the command `dig`, e.g. `dig @${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR} echo-server.${BOOTSTRAP_CLOUDFLARE_DOMAIN}` and you should get a valid answer containing your `${BOOTSTRAP_METALLB_INGRESS_ADDR}` IP address.
 
 If your router (or Pi-Hole, Adguard Home or whatever) supports conditional DNS forwarding (also know as split-horizon DNS) you may have DNS requests for `${SECRET_DOMAIN}` only point to the  `${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}` IP address. This will ensure only DNS requests for `${SECRET_DOMAIN}` will only get routed to your [k8s_gateway](https://github.com/ori-edge/k8s_gateway) service thus providing DNS resolution to your cluster applications/ingresses.
 
@@ -367,12 +365,7 @@ Now that you have the webhook url and secret, it's time to set everything up on 
 Rancher's `local-path-provisioner` is a great start for storage but soon you might find you need more features like replicated block storage, or to connect to a NFS/SMB/iSCSI server. Check out the projects below to read up more on some storage solutions that might work for you.
 
 - [rook-ceph](https://github.com/rook/rook)
-- [longhorn](https://github.com/longhorn/longhorn)
-- [openebs](https://github.com/openebs/openebs)
 - [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
-- [democratic-csi](https://github.com/democratic-csi/democratic-csi)
-- [csi-driver-nfs](https://github.com/kubernetes-csi/csi-driver-nfs)
-- [synology-csi](https://github.com/SynologyOpenSource/synology-csi)
 
 ### 🔏 Authenticate Flux over SSH
 

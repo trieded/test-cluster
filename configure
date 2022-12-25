@@ -29,7 +29,6 @@ main() {
 
     if [[ "${verify}" == 1 ]]; then
         verify_metallb
-        verify_kubevip
         verify_addressing
         verify_age
         verify_git_repository

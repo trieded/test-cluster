@@ -133,7 +133,6 @@ _has_valid_ip() {
 }
 
 verify_addressing() {
-    local found_k8s_gateway="false"
     local found_ingress="false"
 
     # Verify the metallb min and metallb ceiling are in the same network
@@ -149,18 +148,10 @@ verify_addressing() {
     metallb_octet_ceil=$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f2 | cut -d. -f4)
     for (( octet=metallb_octet_min; octet<=metallb_octet_ceil; octet++ )); do
         addr="${metallb_subnet_min}.${octet}"
-        if [[ "${addr}" == "${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}" ]]; then
-            found_k8s_gateway="true"
-        fi
         if [[ "${addr}" == "${BOOTSTRAP_METALLB_INGRESS_ADDR}" ]]; then
             found_ingress="true"
         fi
     done
-
-    if [[ "${found_k8s_gateway}" == "false" ]]; then
-        _log "ERROR" "The IP for k8s_gateway '${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
-        exit 1
-    fi
 
     if [[ "${found_ingress}" == "false" ]]; then
         _log "ERROR" "The IP for ingress '${BOOTSTRAP_METALLB_INGRESS_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
@@ -218,7 +209,6 @@ verify_metallb() {
     local ip_floor=
     local ip_ceil=
     _has_envar "BOOTSTRAP_METALLB_LB_RANGE"
-    _has_envar "BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR"
     _has_envar "BOOTSTRAP_METALLB_INGRESS_ADDR"
 
     ip_floor=$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f1)
@@ -226,7 +216,6 @@ verify_metallb() {
 
     _has_valid_ip "${ip_floor}" "BOOTSTRAP_METALLB_LB_RANGE"
     _has_valid_ip "${ip_ceil}" "BOOTSTRAP_METALLB_LB_RANGE"
-    _has_valid_ip "${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}" "BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR"
     _has_valid_ip "${BOOTSTRAP_METALLB_INGRESS_ADDR}" "BOOTSTRAP_METALLB_INGRESS_ADDR"
 }
 

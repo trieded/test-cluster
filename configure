@@ -52,12 +52,12 @@ main() {
         sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/flux/vars/cluster-secrets.sops.yaml"
 
         envsubst < "${PROJECT_DIR}/tmpl/kubernetes/cert-manager-secret.sops.yaml" \
-            > "${PROJECT_DIR}/kubernetes/apps/cert-manager/cert-manager/issuers/secret.sops.yaml"
-        sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/apps/cert-manager/cert-manager/issuers/secret.sops.yaml"
+            > "${PROJECT_DIR}/kubernetes/core/cert-manager/cert-manager/issuers/secret.sops.yaml"
+        sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/core/cert-manager/cert-manager/issuers/secret.sops.yaml"
 
         envsubst < "${PROJECT_DIR}/tmpl/kubernetes/external-dns-secret.sops.yaml" \
-            > "${PROJECT_DIR}/kubernetes/apps/networking/external-dns/app/secret.sops.yaml"
-        sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/apps/networking/external-dns/app/secret.sops.yaml"
+            > "${PROJECT_DIR}/kubernetes/core/networking/external-dns/app/secret.sops.yaml"
+        sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/core/networking/external-dns/app/secret.sops.yaml"
 
         envsubst < "${PROJECT_DIR}/tmpl/terraform/secret.sops.yaml" \
             > "${PROJECT_DIR}/terraform/cloudflare/secret.sops.yaml"
@@ -245,8 +245,8 @@ setup_github_webhook() {
     _log "INFO" "Using GitHub Token '${WEBHOOK_SECRET}' for Flux"
 
     envsubst < "${PROJECT_DIR}/tmpl/kubernetes/github-webhook-token-secret.sops.yaml" \
-        > "${PROJECT_DIR}/kubernetes/apps/flux-system/addons/webhooks/github/secret.sops.yaml"
-    sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/apps/flux-system/addons/webhooks/github/secret.sops.yaml"
+        > "${PROJECT_DIR}/kubernetes/core/flux-system/addons/webhooks/github/secret.sops.yaml"
+    sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/core/flux-system/addons/webhooks/github/secret.sops.yaml"
 }
 
 setup_weave_gitops() {
@@ -265,8 +265,8 @@ setup_weave_gitops() {
     export BOOTSTRAP_WEAVE_GITOPS_ADMIN_PASSWORD="$(echo -n "${BOOTSTRAP_WEAVE_GITOPS_ADMIN_PASSWORD}" | gitops get bcrypt-hash)"
 
     envsubst < "${PROJECT_DIR}/tmpl/kubernetes/weave-gitops-secret.sops.yaml" \
-        > "${PROJECT_DIR}/kubernetes/apps/flux-system/weave-gitops/app/secret.sops.yaml"
-    sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/apps/flux-system/weave-gitops/app/secret.sops.yaml"
+        > "${PROJECT_DIR}/kubernetes/core/flux-system/weave-gitops/app/secret.sops.yaml"
+    sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/core/flux-system/weave-gitops/app/secret.sops.yaml"
 }
 
 verify_cloudflare() {

@@ -2,17 +2,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: cluster-apps-ingress-nginx
+  name: cluster-core-ingress-nginx
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   dependsOn:
-    - name: cluster-apps-cert-manager
-    - name: cluster-apps-cert-manager-issuers
-    - name: cluster-apps-metallb
-    - name: cluster-apps-metallb-config
-  path: ./kubernetes/apps/networking/ingress-nginx/app
+    - name: cluster-core-cert-manager
+    - name: cluster-core-cert-manager-issuers
+    - name: cluster-core-metallb
+    - name: cluster-core-metallb-config
+  path: ./kubernetes/core/networking/ingress-nginx/app
   prune: true
   sourceRef:
     kind: GitRepository

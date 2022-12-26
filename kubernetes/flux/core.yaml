@@ -2,15 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: cluster-apps
+  name: cluster-core
   namespace: flux-system
 spec:
   dependsOn:
     - name: flux
-    - name: cluster-core
     - name: crds-kube-prometheus-stack
   interval: 30m
-  path: ./kubernetes/apps
+  path: ./kubernetes/core
   prune: true
   sourceRef:
     kind: GitRepository

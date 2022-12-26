@@ -49,7 +49,7 @@ spec:
       pullSecrets: []
 
     ## Number of replicas
-    replicaCount: 3
+    replicaCount: 2
 
     ## @param commonLabels Labels to add to all deployed objects
     ##

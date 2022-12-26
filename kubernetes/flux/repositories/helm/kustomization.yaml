@@ -11,3 +11,4 @@ resources:
   - ./metrics-server.yaml
   - ./stakater.yaml
   - ./weave-gitops.yaml
+  - ./kubernetes-dashboard.yaml

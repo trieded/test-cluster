@@ -1,8 +1,7 @@
-# Template for deploying k3s backed by Flux
+# Mono repository for Talos/k3s backed by Flux
 
-Highly opinionated template for deploying a single [k3s](https://k3s.io) cluster with existing Talos and [Terraform](https://www.terraform.io) backed by [Flux](https://toolkit.fluxcd.io/) and [SOPS](https://toolkit.fluxcd.io/guides/mozilla-sops/).
+My highly opinionated monolithic repository to be run with an existing [Talos](https://www.talos.dev) or [k3s](https://www.k3s.io) cluster, with [Terraform](https://www.terraform.io) backed by [Flux](https://toolkit.fluxcd.io/) and [SOPS](https://toolkit.fluxcd.io/guides/mozilla-sops/).
 
-The purpose here is to showcase how you can deploy an entire Kubernetes cluster and show it off to the world using the [GitOps](https://www.weave.works/blog/what-is-gitops-really) tool [Flux](https://toolkit.fluxcd.io/). When completed, your Git repository will be driving the state of your Kubernetes cluster. In addition with the help of the [Terraform](https://github.com/carlpett/terraform-provider-sops) and [Flux](https://toolkit.fluxcd.io/guides/mozilla-sops/) SOPS integrations you'll be able to commit [Age](https://github.com/FiloSottile/age) encrypted secrets to your public repo.
 
 ## Overview
 
@@ -17,7 +16,7 @@ The purpose here is to showcase how you can deploy an entire Kubernetes cluster 
 
 ## 👋 Introduction
 
-The following components will be installed in your [k3s](https://k3s.io/) cluster by default. Most are only included to get a minimum viable cluster up and running.
+The following components will be installed in your Kubernetes cluster by default. Most are only included to get a minimum viable cluster up and running.
 
 - [flux](https://toolkit.fluxcd.io/) - GitOps operator for managing Kubernetes clusters from a Git repository
 - [metallb](https://metallb.universe.tf/) - Load balancer for Kubernetes services
@@ -26,31 +25,23 @@ The following components will be installed in your [k3s](https://k3s.io/) cluste
 - [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) - Kubernetes ingress controller used for a HTTP reverse proxy of Kubernetes ingresses
 - [local-path-provisioner](https://github.com/rancher/local-path-provisioner) - provision persistent local storage with Kubernetes
 
-_Additional applications include [error-pages](https://github.com/tarampampam/error-pages), [echo-server](https://github.com/Ealenn/Echo-Server), [reloader](https://github.com/stakater/Reloader), and [kured](https://github.com/weaveworks/kured)_
+_Additional applications include [error-pages](https://github.com/tarampampam/error-pages), [echo-server](https://github.com/Ealenn/Echo-Server), [reloader](https://github.com/stakater/Reloader), and [kured](https://github.com/weaveworks/kured), [kubernetes-dashboard](https://github.com/kubernetes/dashboard)_
 
 For provisioning the following tools will be used:
 
 - [Ubuntu 22.04 Server](https://ubuntu.com/download/server) - Alternative operating system, limited community support
-- Talos - Existing Talos installation
+- [Talos](https://www.talos.dev) - Existing Talos installation
 - [Terraform](https://www.terraform.io) - Provision an already existing Cloudflare domain and certain DNS records to be used with your k3s cluster
 
 ## 📝 Prerequisites
 
-**Note:** _This template has not been tested on cloud providers like AWS EC2, Hetzner, Scaleway etc... Those cloud offerings probably have a better way of provsioning a Kubernetes cluster and it's advisable to use those instead of the Ansible playbooks included here. This repository can still be tweaked for the GitOps/Flux portion if there's a cluster working in one those environments._
-
-### 📚 Reading material
-
-- [Organizing Cluster Access Using kubeconfig Files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
-
 ### 💻 Systems
 
-- One or more nodes with a fresh install of Talos.
+- One or more nodes with a fresh install of [Talos](https://www.talos.dev).
   - These nodes can be ARM64/AMD64 bare metal or VMs.
   - An odd number of control plane nodes, greater than or equal to 3 is required if deploying more than one control plane node.
-- A [Cloudflare](https://www.cloudflare.com/) account with a domain, this will be managed by Terraform and external-dns. You can [register new domains](https://www.cloudflare.com/products/registrar/) directly thru Cloudflare.
+- A [Cloudflare](https://www.cloudflare.com/) account with a domain, this will be managed by Terraform and external-dns.
 - Some experience in debugging problems and a positive attitude ;)
-
-📍 It is recommended to have 3 master nodes for a highly available control plane.
 
 ### 🔧 Workstation Tools
 
@@ -104,8 +95,6 @@ The Git repository contains the following directories under `kubernetes` and are
 ```
 
 ## 🚀 Lets go
-
-Very first step will be to create a new repository by clicking the **Use this template** button on this page.
 
 Clone the repo to you local workstation and `cd` into it.
 
@@ -298,8 +287,6 @@ task cluster:resources
 
 🏆 **Congratulations** if all goes smooth you'll have a Kubernetes cluster managed by Flux, your Git repository is driving the state of your cluster.
 
-🧠 Now it's time to pause and go get some coffee ☕ because next is describing how DNS is handled.
-
 ## 📣 Post installation
 
 ### 🌐 DNS
@@ -354,7 +341,7 @@ Now that you have the webhook url and secret, it's time to set everything up on 
 
 ### 💾 Storage
 
-Rancher's `local-path-provisioner` is a great start for storage but soon you might find you need more features like replicated block storage, or to connect to a NFS/SMB/iSCSI server. Check out the projects below to read up more on some storage solutions that might work for you.
+Rancher's `local-path-provisioner` is a great start for storage but for a reliable solution for Talos, use Rook Ceph.
 
 - [rook-ceph](https://github.com/rook/rook)
 - [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
@@ -437,10 +424,6 @@ The benefits of a public repository include:
 
 - [Discussions](https://github.com/onedr0p/flux-cluster-template/discussions)
 - [Discord](https://discord.gg/k8s-at-home)
-
-## ❔ What's next
-
-The world is your cluster, have at it!
 
 ## 🤝 Thanks
 
